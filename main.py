@@ -37,14 +37,16 @@ def init_db():
                   id INTEGER PRIMARY KEY,
                   username TEXT UNIQUE,
                   password_hash TEXT
-                  
               )
-              """)
+            """)
     c.execute("""
               CREATE TABLE IF NOT EXISTS tasks(
                   id INTEGER PRIMARY KEY, 
                   user_id INTEGER,
                   task TEXT,
+                  is_done INTEGER DEFAULT 0,
+                  category TEXT DEFAULT "未分類",
+                  priority TEXT DEFAULT "中",
                   FOREIGN KEY(user_id) REFERENCES users(id)
                 )
             """)
@@ -54,21 +56,65 @@ def init_db():
 @app.route("/")
 @login_required
 def index():
+    category_filiter = request.args.get("category")
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
-    c.execute("SELECT id, task FROM tasks WHERE user_id=?", (current_user.id,))
+    if category_filiter:
+        c.execute("""
+                  SELECT id, task, is_done, category, priority 
+                  FROM tasks 
+                  WHERE user_id=? AND category=?
+                  ORDER BY 
+                    CASE priority
+                        WHEN "高" THEN 1
+                        WHEN "中" THEN 2
+                        WHEN "低" THEN 3
+                    END
+        """, (current_user.id, category_filiter))
+    else:
+        c.execute("""
+            SELECT id, task, is_done, category, priority 
+            FROM tasks 
+            WHERE user_id=? 
+            ORDER BY 
+            CASE priority
+                WHEN "高" THEN 1
+                WHEN "中" THEN 2
+                WHEN "低" THEN 3
+            END
+        """, (current_user.id,))
+
     tasks = c.fetchall()
     conn.close()
+    
     return render_template("index.html", tasks=tasks, username=current_user.username)
 
 @app.route("/add", methods=["POST"])
 @login_required
 def add():
     task = request.form["task"]
+    category = request.form["category"]
+    priority = request.form["priority"]
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
-    c.execute("INSERT INTO tasks(user_id, task) VALUES(?, ?)", (current_user.id, task))
+    c.execute("""
+        INSERT INTO tasks(user_id, task, is_done, category, priority) VALUES(?, ?, 0, ?, ?)
+    """, (current_user.id, task, category, priority))
     conn.commit()
+    conn.close()
+    return redirect("/")
+
+@app.route("/toggle/<int:id>")
+@login_required
+def toggle(id):
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute("SELECT is_done FROM tasks WHERE id=? AND user_id=?", (id, current_user.id))
+    task = c.fetchone()
+    if task:
+        new_status = 0 if task[0] == 1 else 1
+        c.execute("UPDATE tasks SET is_done=? WHERE id=? AND user_id=?", (new_status, id, current_user.id))
+        conn.commit()
     conn.close()
     return redirect("/")
 
