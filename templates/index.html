@@ -5,15 +5,16 @@
         <title>ToDo App</title>
     </head>
     <body>
-        <h1>ToDo List</h1>
+        <h1>{{ username }} のToDoリスト</h1>
         <form action="/add" method="POST">
             <input type="text" name="task" required>
             <button type="submit">追加</button>
         </form>
         <ul>
             {% for task in tasks %}
-            <li>{{ task[1]  }} <a href="/delete.{{task[0]}}">削除</a></li>
+            <li>{{ task[1] }} <a href="/delete/{{ task[0] }}">削除</a></li>
             {% endfor %}
         </ul>
+        <a href="/logout">ログアウト</a>
     </body>
 </html>

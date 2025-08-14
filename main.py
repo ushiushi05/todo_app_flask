@@ -30,7 +30,7 @@ def load_user(user_id):
     return None
 
 def init_db():
-    conn = sqlite3.connect("todo.db")
+    conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
     c.execute("""
               CREATE TABLE IF NOT EXISTS users(
@@ -56,7 +56,7 @@ def init_db():
 def index():
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
-    c.execute("SELECT id task FROM tasks WHERE user_id=?", (current_user.id,))
+    c.execute("SELECT id, task FROM tasks WHERE user_id=?", (current_user.id,))
     tasks = c.fetchall()
     conn.close()
     return render_template("index.html", tasks=tasks, username=current_user.username)
@@ -72,12 +72,12 @@ def add():
     conn.close()
     return redirect("/")
 
-@app.route("/delete.<int:id>")
+@app.route("/delete/<int:id>")
 @login_required
 def delete(id):
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
-    c.execute("DELETE FROM tasks WHERE id=? AND user_id=?)", (id, current_user.id))
+    c.execute("DELETE FROM tasks WHERE id=? AND user_id=?", (id, current_user.id))
     conn.commit()
     conn.close()
     return redirect("/")
