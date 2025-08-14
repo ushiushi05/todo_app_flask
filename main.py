@@ -56,10 +56,10 @@ def init_db():
 @app.route("/")
 @login_required
 def index():
-    category_filiter = request.args.get("category")
+    category_filter = request.args.get("category")
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
-    if category_filiter:
+    if category_filter:
         c.execute("""
                   SELECT id, task, is_done, category, priority 
                   FROM tasks 
@@ -70,7 +70,7 @@ def index():
                         WHEN "中" THEN 2
                         WHEN "低" THEN 3
                     END
-        """, (current_user.id, category_filiter))
+        """, (current_user.id, category_filter))
     else:
         c.execute("""
             SELECT id, task, is_done, category, priority 
@@ -83,11 +83,38 @@ def index():
                 WHEN "低" THEN 3
             END
         """, (current_user.id,))
-
-    tasks = c.fetchall()
+    print("カテゴリー：" + str(category_filter))
+    active_tasks = c.fetchall()
+    
+    
+    if category_filter:
+        c.execute("""
+                  SELECT id, task, is_done, category, priority
+                  FROM tasks
+                  WHERE user_id=? AND category=? AND is_done=1
+                  ORDER BY 
+                CASE priority
+                    WHEN "高" THEN 1
+                    WHEN "中" THEN 2
+                    WHEN "低" THEN 3
+                END
+        """, (current_user.id, category_filter))
+    else:
+        c.execute("""
+            SELECT id, task, is_done, category, priority 
+            FROM tasks 
+            WHERE user_id=? AND is_done=1 
+            ORDER BY 
+            CASE priority
+                WHEN "高" THEN 1
+                WHEN "中" THEN 2
+                WHEN "低" THEN 3
+            END
+        """, (current_user.id,))
+    completed_tasks = c.fetchall()  
     conn.close()
     
-    return render_template("index.html", tasks=tasks, username=current_user.username)
+    return render_template("index.html", active_tasks=active_tasks, completed_tasks=completed_tasks, username=current_user.username)
 
 @app.route("/add", methods=["POST"])
 @login_required

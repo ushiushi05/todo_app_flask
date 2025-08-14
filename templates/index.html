@@ -30,18 +30,27 @@
         <a href="/?category=勉強">勉強</a>
         <a href="/?category=その他">その他</a>
     </div>
+    <h2>未完了タスク</h2>
     <ul>
-        {% for task in tasks %}
+        {% for task in active_tasks %}
         <li>
-            {% if task[2] == 1 %}
-                <span style="color: red;"><s>{{ task[1] }}</s></span>
-            {% else %}
-                {{ task[1] }}
-            {% endif %}
-            [{{ task[3] }} / 優先度：{{ task[4] }}]
-            <a href="/toggle/{{ task[0] }}">完了/未完了</a>
+            {{ task[1] }} [{{ task[3] }} / 優先度：{{ task[4] }}]
+            <a href="/toggle/{{ task[0] }}">完了</a>
             <a href="/delete/{{ task[0] }}">削除</a>
         </li>
+        {% else %}
+        <li>未完了タスクはありません。</li>
+        {% endfor %}
+    </ul>
+    <h2>完了タスク</h2>
+    <ul>
+        {% for task in completed_tasks %}
+        <li>
+            <s>{{ task[1] }}</s> [{{ task[3] }} / 優先度：{{ task[4] }}]
+             <a href="/toggle/{{ task[0] }}">未完了に戻す</a>
+            <a href="/delete/{{ task[0] }}">削除</a>
+        {% else %}
+        <li>完了タスクはありません。</li>
         {% endfor %}
     </ul>
     <a href="/logout">ログアウト</a>
