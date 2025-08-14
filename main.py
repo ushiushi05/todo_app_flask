@@ -43,6 +43,7 @@ def init_db():
     c.execute("""
               CREATE TABLE IF NOT EXISTS tasks(
                   id INTEGER PRIMARY KEY, 
+                  user_id INTEGER,
                   task TEXT,
                   FOREIGN KEY(user_id) REFERENCES users(id)
                 )
@@ -120,7 +121,7 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for("login"))
-    
+
 if __name__ == "__main__":
     init_db()
     app.run(debug=True)
