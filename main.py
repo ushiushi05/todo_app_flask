@@ -19,7 +19,7 @@ def index():
     conn.close()
     return render_template("index.html", tasks=tasks)
 
-@app.route("/add", method=["POST"])
+@app.route("/add", methods=["POST"])
 def add():
     task = request.form["task"]
     conn = sqlite3.connect("todo.db")
@@ -41,4 +41,3 @@ def delete(id):
 if __name__ == "__main__":
     init_db()
     app.run(debug=True)
-    
