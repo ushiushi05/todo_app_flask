@@ -4,6 +4,7 @@
 <head>
     <meta charset="utf-8">
     <title>ToDo App</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 
 <body>
@@ -13,22 +14,23 @@
             <input type="text" name="q" placeholder="タスクを検索" value="{{ request.args.get('q', '') }}">
             <button type="submit">検索</button>
         </form>
-        {% if filter_tasks %}
-            <ul>
-                {% for task in filter_tasks %}
-                <li>
-                    {{ task[1] }} [{{ task[3] }} / 優先度：{{ task[4] }} / 作成日：{{ task[5] }}]
-                    <a href="/toggle/{{ task[0] }}">完了</a>
-                    <a href="/delete/{{ task[0] }}">削除</a>
-                </li>
-                {% endfor %}
-            </ul>
+        {% if request.args.get("q") %}
+        {% if search_result %}
+        <ul>
+            {% for task in search_result %}
+            <li>
+                {{ task[1] }} [{{ task[3] }} / 優先度：{{ task[4] }} / 作成日：{{ task[5] }}]
+                <a href="/delete/{{ task[0] }}">削除</a>
+            </li>
+            {% endfor %}
+        </ul>
         {% else %}
-            <p>該当する未完了タスクはありません。</p> 
+        <p>該当する未完了タスクはありません。</p>
+        {% endif %}
         {% endif %}
     </div>
     <form action="/add" method="POST">
-        <input type="text" name="task" required>
+        <input type="text" name="task" placeholder="タスクを追加" required>
         <select name="category">
             <option value="買い物">買い物</option>
             <option value="仕事">仕事</option>
@@ -36,9 +38,9 @@
             <option value="その他">その他</option>
         </select>
         <select name="priority">
-            <option value="高">高</option>
-            <option value="中" selected>中</option>
-            <option value="低">低</option>
+            <option value="1">高</option>
+            <option value="2" selected>中</option>
+            <option value="3">低</option>
         </select>
         <button type="submit">追加</button>
     </form>
@@ -50,42 +52,107 @@
         <a href="/?category=その他">その他</a>
     </div>
     <h2>未完了タスク</h2>
-    <div>
-        <label for="sortSelect">ソート：</label>
-        <select id="sortSelect">
-            <option value="date_created">作成日</option>
-            <option value="priority">優先度</option>
-            <option value="category">カテゴリー</option>
-        </select>
-    </div>
-    <ul id="activeTasks">
-        {% for task in active_tasks %}
-        <li class="task-item"
-            data-category="{{ task[3] }}"
-            data-priority="{{ task[4] }}"
-            data-created="{{ task[5] }}">
-            {{ task[1]}}
-            [{{ task[3] }} / 優先度：{{ task[4] }} / 作成日：{{ task[5] }}]
-            <a href="/toggle/{{ task[0] }}">完了</a>
-            <a href="/delete/{{ task[0] }}">削除</a>    
-        </li>
-        {% else %}
-        <li>未完了タスクはありません。</li>
-        {% endfor %}
-    </ul>
+
+    <table id="todoTable">
+        <thead>
+            <tr class="sortable">
+                <th data-sort="category">カテゴリー</th>
+                <th data-sort="task">タスク</th>
+                <th data-sort="priority">優先度</th>
+                <th data-sort="created">作成日</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for task in active_tasks %}
+            <tr id="task-{{ task[0] }}" 
+                class="task-item" 
+                data-id="{{ task[0] }}"
+                data-task="{{ task[1] }}"
+                data-category="{{ task[3] }}"
+                data-priority="{{ task[4] }}"
+                data-created="{{ task[5] }}">
+                <td class="category">{{ task[3] }}</td>
+                <td class="task">{{ task[1] }}</td>
+                <td class="priority">
+                    {% if task[4] == 1 %}高
+                    {% elif task[4] == 2 %}中
+                    {% else %}低
+                    {% endif %}
+                </td>
+                <td class="date_created">{{ task[5] }}</td>
+                <td><a href="/toggle/{{ task[0] }}">完了</a></td>
+                <td><button class="edit-btn">編集</button></td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="6">未完了タスクはありません。</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
     <script src="{{ url_for('static', filename='js/sort.js') }}"></script>
     <h2>完了タスク</h2>
-    <ul>
-        {% for task in completed_tasks %}
-        <li>
-            <s>{{ task[1] }}</s> [{{ task[3] }} / 優先度：{{ task[4] }} / 作成日：{{ task[5] }}]
-             <a href="/toggle/{{ task[0] }}">未完了に戻す</a>
-            <a href="/delete/{{ task[0] }}">削除</a>
-        {% else %}
-        <li>完了タスクはありません。</li>
-        {% endfor %}
-    </ul>
+    <table id="todoTable">
+        <thead>
+            <tr class="sortable">
+                <th data-type="string">カテゴリー</th>
+                <th data-type="string">タスク</th>
+                <th data-type="number">優先度</th>
+                <th data-type="date">作成日</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for task in completed_tasks %}
+            <tr class="task-item" data-category="{{ task[3] }}" data-priority="{{ task[4] }}"
+                data-created="{{ task[5] }}">
+                <td>{{ task[3] }}</td>
+                <td>{{ task[1] }}</td>
+                <td>
+                    {% if task[4] == 1 %}高
+                    {% elif task[4] == 2 %}中
+                    {% else %}低
+                    {% endif %}
+                </td>
+                <td>{{ task[5] }}</td>
+                <td><a href="/toggle/{{ task[0] }}">未完了に戻す</a></td>
+                <td><a href="/delete/{{ task[0] }}">削除</a></td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="6">完了タスクはありません。</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
     <a href="/logout">ログアウト</a>
+
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <button id="closeModal">&times;</button>
+            <h2 id="editModalTitle">タスクを編集</h2>
+            <form id="editForm">
+                <input type="hidden" name="task_id" id="modalTaskId">
+                <label for="modalTask">タスク</label>
+                <input type="text" name="task" id="modalTask" required><br>
+                <label for="modalCategory">カテゴリー</label>
+                <select name="category" id="modalCategory" required> 
+                    <option value="買い物">買い物</option>
+                    <option value="仕事">仕事</option>
+                    <option value="勉強">勉強</option>
+                    <option value="その他">その他</option>
+                </select><br>
+                <label for="modalPriority">優先度</label>
+                <select name="priority" id="modalPriority" required>
+                    <option value="1">高</option>
+                    <option value="2">中</option>
+                    <option value="3">低</option>
+                </select><br>
+                <button type="submit">保存</button>
+            </form>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='js/modal.js') }}"></script>
 </body>
 
 </html>

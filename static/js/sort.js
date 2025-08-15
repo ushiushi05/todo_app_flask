@@ -1,26 +1,37 @@
-document.addEventListener("DOMContentLoaded", function() {
-    const sortSelect = document.getElementById("sortSelect");
-    const activeTasksList = document.getElementById("activeTasks");
+const table = document.getElementById("todoTable");
+const tbody = table.querySelector("tbody");
+let sortDirction = {};
 
-    sortSelect.addEventListener("change", function() {
-        const sortBy = sortSelect.value;
-        const tasks = Array.from(activeTasksList.querySelectorAll("li"));
+table.querySelectorAll("th").forEach(th => {
+    th.addEventListener("click", () => {
+        const sortKey = th.dataset.sort;
+        if(!sortKey) return;
 
-        tasks.sort((a, b) => {
+        sortDirction[sortKey] = !sortDirction[sortKey];
+        const direction = sortDirction[sortKey] ? "asc" : "desc";
+
+        const rows = Array.from(tbody.querySelectorAll("tr"));
+        rows.sort((a, b) => {
             let aValue, bValue;
-            if(sortBy === "category"){
-                aValue = a.dataset.category.toLowerCase();
-                bValue = b.dataset.category.toLowerCase();
-            } else if(sortBy === "priority"){
-                aValue = parseInt(a.dataset.priority);
-                bValue = parseInt(b.dataset.priority);
-            } else if(sortBy === "date_created"){
-                aValue = new Date(a.dataset.dateCreated);
-                bValue = new Date(b.dataset.dateCreated);
-            }
-            return aValue > bValue ? 1 :aValue < bValue ? -1 :0;
-        });
 
-        tasks.forEach(task => activeTasksList.appendChild(task));
+            switch (sortKey) {
+                case "category":
+                case "task":
+                    aValue = a.dataset.category.toLowerCase();
+                    bValue = b.dataset.category.toLowerCase();
+                    return direction === "asc" ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
+                case "priority":
+                    aValue = parseInt(a.dataset.priority);
+                    bValue = parseInt(b.dataset.priority);
+                    return direction === "asc" ? aValue - bValue : bValue - aValue;
+                case "created":
+                    aValue = new Date(a.dataset.created).getTime();
+                    bValue = new Date(b.dataset.created).getTime();
+                    return direction === "asc" ? aValue - bValue : bValue - aValue;
+                default:
+                    return 0;
+            }
+        });
+        rows.forEach(row => tbody.appendChild(row)); // Reorder rows in the table
     });
 });

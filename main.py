@@ -1,7 +1,8 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, jsonify
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user, UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 import sqlite3, os
+from datetime import date
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "default_secret_key")
@@ -45,9 +46,9 @@ def init_db():
                   user_id INTEGER,
                   task TEXT,
                   is_done INTEGER DEFAULT 0,
-                  category TEXT DEFAULT "未分類",
-                  priority TEXT DEFAULT "中",
-                  date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                  category TEXT,
+                  priority INTEGER,
+                  date_created DATE,
                   FOREIGN KEY(user_id) REFERENCES users(id)
                 )
             """)
@@ -65,24 +66,12 @@ def index():
                   SELECT id, task, is_done, category, priority, date_created
                   FROM tasks 
                   WHERE user_id=? AND category=? AND is_done=0
-                  ORDER BY 
-                    CASE priority
-                        WHEN "高" THEN 1
-                        WHEN "中" THEN 2
-                        WHEN "低" THEN 3
-                    END
         """, (current_user.id, category_filter))
     else:
         c.execute("""
             SELECT id, task, is_done, category, priority, date_created
             FROM tasks 
             WHERE user_id=? AND is_done=0
-            ORDER BY 
-            CASE priority
-                WHEN "高" THEN 1
-                WHEN "中" THEN 2
-                WHEN "低" THEN 3
-            END
         """, (current_user.id,))
     print("カテゴリー：" + str(category_filter))
     active_tasks = c.fetchall()
@@ -114,6 +103,8 @@ def index():
         """, (current_user.id,))
     completed_tasks = c.fetchall()  
     
+    # 検索機能
+    search_result = []
     search_query = request.args.get("q", "")
     if search_query:
         c.execute("""
@@ -126,24 +117,12 @@ def index():
                       WHEN "中" THEN 2
                       WHEN "低" THEN 3
                   END
-        """, (current_user.id, f"%{search_query}%"))
-    else:
-        c.execute("""
-                  SELECT id, task, is_done, category, priority, date_created
-                  FROM tasks
-                  WHERE user_id=? AND is_done=0
-                  ORDER BY
-                  CASE priority
-                      WHEN "高" THEN 1
-                      WHEN "中" THEN 2
-                      WHEN "低" THEN 3
-                  END
-        """, (current_user.id,))
-    filter_tasks = c.fetchall()            
+        """, (current_user.id, f"%{search_query}%"))        
+    search_result = c.fetchall()            
     conn.close()
     
     return render_template("index.html", active_tasks=active_tasks, completed_tasks=completed_tasks, 
-                           filter_tasks=filter_tasks, username=current_user.username)
+                           search_result=search_result, username=current_user.username)
 
 @app.route("/add", methods=["POST"])
 @login_required
@@ -151,14 +130,40 @@ def add():
     task = request.form["task"]
     category = request.form["category"]
     priority = request.form["priority"]
+    current_date = date.today()
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
     c.execute("""
-        INSERT INTO tasks(user_id, task, is_done, category, priority, date_created) VALUES(?, ?, 0, ?, ?, current_date)
-    """, (current_user.id, task, category, priority))
+        INSERT INTO tasks(user_id, task, is_done, category, priority, date_created) VALUES(?, ?, 0, ?, ?, ?)
+    """, (current_user.id, task, category, priority, current_date))
     conn.commit()
     conn.close()
     return redirect("/")
+
+@app.route("/update/<int:id>", methods=["POST"])
+@login_required
+def update_task(id):
+    data = request.get_json()
+    task = data["task"]
+    category = data["category"]
+    priority = data["priority"]
+    current_date = date.today()
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute("""
+        UPDATE tasks 
+        SET task=?, category=?, priority=?, date_created=?
+        WHERE id=? AND user_id=?
+    """, (task, category, priority, current_date, id, current_user.id))
+    conn.commit()
+    conn.close()
+    return jsonify({
+        "id": id,
+        "task": task,
+        "category": category,
+        "priority": priority,
+        "date_created": current_date
+        })
 
 @app.route("/toggle/<int:id>")
 @login_required
