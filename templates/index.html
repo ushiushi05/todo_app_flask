@@ -8,6 +8,25 @@
 
 <body>
     <h1>{{ username }} のToDoリスト</h1>
+    <div>
+        <form action="/" method="GET">
+            <input type="text" name="q" placeholder="タスクを検索" value="{{ request.args.get('q', '') }}">
+            <button type="submit">検索</button>
+        </form>
+        {% if filter_tasks %}
+            <ul>
+                {% for task in filter_tasks %}
+                <li>
+                    {{ task[1] }} [{{ task[3] }} / 優先度：{{ task[4] }} / 作成日：{{ task[5] }}]
+                    <a href="/toggle/{{ task[0] }}">完了</a>
+                    <a href="/delete/{{ task[0] }}">削除</a>
+                </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>該当する未完了タスクはありません。</p> 
+        {% endif %}
+    </div>
     <form action="/add" method="POST">
         <input type="text" name="task" required>
         <select name="category">
@@ -31,17 +50,30 @@
         <a href="/?category=その他">その他</a>
     </div>
     <h2>未完了タスク</h2>
-    <ul>
+    <div>
+        <label for="sortSelect">ソート：</label>
+        <select id="sortSelect">
+            <option value="date_created">作成日</option>
+            <option value="priority">優先度</option>
+            <option value="category">カテゴリー</option>
+        </select>
+    </div>
+    <ul id="activeTasks">
         {% for task in active_tasks %}
-        <li>
-            {{ task[1] }} [{{ task[3] }} / 優先度：{{ task[4] }} / 作成日：{{ task[5] }}]
+        <li class="task-item"
+            data-category="{{ task[3] }}"
+            data-priority="{{ task[4] }}"
+            data-created="{{ task[5] }}">
+            {{ task[1]}}
+            [{{ task[3] }} / 優先度：{{ task[4] }} / 作成日：{{ task[5] }}]
             <a href="/toggle/{{ task[0] }}">完了</a>
-            <a href="/delete/{{ task[0] }}">削除</a>
+            <a href="/delete/{{ task[0] }}">削除</a>    
         </li>
         {% else %}
         <li>未完了タスクはありません。</li>
         {% endfor %}
     </ul>
+    <script src="{{ url_for('static', filename='js/sort.js') }}"></script>
     <h2>完了タスク</h2>
     <ul>
         {% for task in completed_tasks %}

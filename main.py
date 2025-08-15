@@ -41,7 +41,7 @@ def init_db():
             """)
     c.execute("""
               CREATE TABLE IF NOT EXISTS tasks(
-                  id INTEGER PRIMARY KEY, 
+                  id INTEGER PRIMARY KEY AUTOINCREMENT, 
                   user_id INTEGER,
                   task TEXT,
                   is_done INTEGER DEFAULT 0,
@@ -113,9 +113,37 @@ def index():
             END
         """, (current_user.id,))
     completed_tasks = c.fetchall()  
+    
+    search_query = request.args.get("q", "")
+    if search_query:
+        c.execute("""
+                  SELECT id, task, is_done, category, priority, date_created
+                  FROM tasks
+                  WHERE user_id=? AND task LIKE ? AND is_done=0
+                  ORDER BY
+                  CASE priority
+                      WHEN "高" THEN 1
+                      WHEN "中" THEN 2
+                      WHEN "低" THEN 3
+                  END
+        """, (current_user.id, f"%{search_query}%"))
+    else:
+        c.execute("""
+                  SELECT id, task, is_done, category, priority, date_created
+                  FROM tasks
+                  WHERE user_id=? AND is_done=0
+                  ORDER BY
+                  CASE priority
+                      WHEN "高" THEN 1
+                      WHEN "中" THEN 2
+                      WHEN "低" THEN 3
+                  END
+        """, (current_user.id,))
+    filter_tasks = c.fetchall()            
     conn.close()
     
-    return render_template("index.html", active_tasks=active_tasks, completed_tasks=completed_tasks, username=current_user.username)
+    return render_template("index.html", active_tasks=active_tasks, completed_tasks=completed_tasks, 
+                           filter_tasks=filter_tasks, username=current_user.username)
 
 @app.route("/add", methods=["POST"])
 @login_required
