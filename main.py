@@ -47,6 +47,7 @@ def init_db():
                   is_done INTEGER DEFAULT 0,
                   category TEXT DEFAULT "未分類",
                   priority TEXT DEFAULT "中",
+                  date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                   FOREIGN KEY(user_id) REFERENCES users(id)
                 )
             """)
@@ -61,7 +62,7 @@ def index():
     c = conn.cursor()
     if category_filter:
         c.execute("""
-                  SELECT id, task, is_done, category, priority 
+                  SELECT id, task, is_done, category, priority, date_created
                   FROM tasks 
                   WHERE user_id=? AND category=? AND is_done=0
                   ORDER BY 
@@ -73,7 +74,7 @@ def index():
         """, (current_user.id, category_filter))
     else:
         c.execute("""
-            SELECT id, task, is_done, category, priority 
+            SELECT id, task, is_done, category, priority, date_created
             FROM tasks 
             WHERE user_id=? AND is_done=0
             ORDER BY 
@@ -89,7 +90,7 @@ def index():
     
     if category_filter:
         c.execute("""
-                  SELECT id, task, is_done, category, priority
+                  SELECT id, task, is_done, category, priority, date_created
                   FROM tasks
                   WHERE user_id=? AND category=? AND is_done=1
                   ORDER BY 
@@ -101,7 +102,7 @@ def index():
         """, (current_user.id, category_filter))
     else:
         c.execute("""
-            SELECT id, task, is_done, category, priority 
+            SELECT id, task, is_done, category, priority, date_created
             FROM tasks 
             WHERE user_id=? AND is_done=1 
             ORDER BY 
@@ -125,7 +126,7 @@ def add():
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
     c.execute("""
-        INSERT INTO tasks(user_id, task, is_done, category, priority) VALUES(?, ?, 0, ?, ?)
+        INSERT INTO tasks(user_id, task, is_done, category, priority, date_created) VALUES(?, ?, 0, ?, ?, current_date)
     """, (current_user.id, task, category, priority))
     conn.commit()
     conn.close()

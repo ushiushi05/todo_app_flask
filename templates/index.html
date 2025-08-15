@@ -34,7 +34,7 @@
     <ul>
         {% for task in active_tasks %}
         <li>
-            {{ task[1] }} [{{ task[3] }} / 優先度：{{ task[4] }}]
+            {{ task[1] }} [{{ task[3] }} / 優先度：{{ task[4] }} / 作成日：{{ task[5] }}]
             <a href="/toggle/{{ task[0] }}">完了</a>
             <a href="/delete/{{ task[0] }}">削除</a>
         </li>
@@ -46,7 +46,7 @@
     <ul>
         {% for task in completed_tasks %}
         <li>
-            <s>{{ task[1] }}</s> [{{ task[3] }} / 優先度：{{ task[4] }}]
+            <s>{{ task[1] }}</s> [{{ task[3] }} / 優先度：{{ task[4] }} / 作成日：{{ task[5] }}]
              <a href="/toggle/{{ task[0] }}">未完了に戻す</a>
             <a href="/delete/{{ task[0] }}">削除</a>
         {% else %}
