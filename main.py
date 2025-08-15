@@ -63,7 +63,7 @@ def index():
         c.execute("""
                   SELECT id, task, is_done, category, priority 
                   FROM tasks 
-                  WHERE user_id=? AND category=?
+                  WHERE user_id=? AND category=? AND is_done=0
                   ORDER BY 
                     CASE priority
                         WHEN "高" THEN 1
@@ -75,7 +75,7 @@ def index():
         c.execute("""
             SELECT id, task, is_done, category, priority 
             FROM tasks 
-            WHERE user_id=? 
+            WHERE user_id=? AND is_done=0
             ORDER BY 
             CASE priority
                 WHEN "高" THEN 1
