@@ -1,79 +1,71 @@
-/* ベース（モバイル用） */
-body {
-    font-family: sans-serif;
-    margin: 10px;
-}
-
-table {
+/* --- PC表示: テーブル形式 --- */
+.task-table {
     width: 100%;
     border-collapse: collapse;
 }
 
-th,
-td {
+.task-table th,
+.task-table td {
+    border: 1px solid #ddd;
     padding: 8px;
     text-align: left;
 }
 
-/* スマホの時はテーブルをカード風に */
-@media (max-width: 600px) {
-
-    table,
-    thead,
-    tbody,
-    th,
-    td,
-    tr {
-        display: block;
-    }
-
-    thead {
+/* --- スマホ表示: カード形式 --- */
+@media screen and (max-width: 768px) {
+    .task-table thead {
         display: none;
-        /* ヘッダー非表示 */
+        /* ヘッダーを非表示にする */
     }
 
-    tr {
-        margin-bottom: 15px;
+    .task-table,
+    .task-table tbody,
+    .task-table tr,
+    .task-table td {
+        display: block;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box;
+
+    }
+
+    .task-table tr {
+        margin-bottom: 1rem;
         border: 1px solid #ccc;
         border-radius: 8px;
-        padding: 10px;
-        background: #f9f9f9;
+        padding: 0.5rem;
+        background: #fafafa;
+        width: 100% !important;
     }
 
-    td {
+    .task-table td {
         display: flex;
-        justify-content: space-between;
-        padding: 5px;
+        justify-content: center;
+        padding: 8px;
+        border: none;
+        border-bottom: 1px solid #eee;
+        width: 100% !important;
+        max-width: 100% !important;
+        word-break: break-word; /* 長文がはみ出さない */
     }
 
-    td::before {
+    /* 左側に data-label を表示して見出し代わりにする */
+    .task-table td::before {
         content: attr(data-label);
-        /* 各セルにラベルを表示 */
+        position: absolute;
+        left: 1.5rem;
         font-weight: bold;
+        text-align: left;
+    }
+
+     /* 横スクロールを強制禁止 */
+    body {
+        overflow-x: hidden;
     }
 }
 
-table {
-    border-collapse: collapse;
 
-}
-
-#todotable th,
-td {
-    border: 1px solid #ccc;
-    padding: 8px;
-    text-align: left;
-}
-
-.sortable th {
-    cursor: pointer;
-    background-color: lightgrey;
-}
-
-.sortable th:hover {
-    background-color: whitesmoke;
-}
-
+/* ==== モーダル ==== */
 .modal {
     display: none;
     position: fixed;
