@@ -1,9 +1,65 @@
+/* ベース（モバイル用） */
+body {
+    font-family: sans-serif;
+    margin: 10px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th,
+td {
+    padding: 8px;
+    text-align: left;
+}
+
+/* スマホの時はテーブルをカード風に */
+@media (max-width: 600px) {
+
+    table,
+    thead,
+    tbody,
+    th,
+    td,
+    tr {
+        display: block;
+    }
+
+    thead {
+        display: none;
+        /* ヘッダー非表示 */
+    }
+
+    tr {
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        padding: 10px;
+        background: #f9f9f9;
+    }
+
+    td {
+        display: flex;
+        justify-content: space-between;
+        padding: 5px;
+    }
+
+    td::before {
+        content: attr(data-label);
+        /* 各セルにラベルを表示 */
+        font-weight: bold;
+    }
+}
+
 table {
     border-collapse: collapse;
 
 }
 
-#todotable th, td {
+#todotable th,
+td {
     border: 1px solid #ccc;
     padding: 8px;
     text-align: left;
