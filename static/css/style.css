@@ -12,7 +12,7 @@
 }
 
 /* --- スマホ表示: カード形式 --- */
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 440px) {
     .task-table thead {
         display: none;
         /* ヘッダーを非表示にする */
