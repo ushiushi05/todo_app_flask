@@ -12,12 +12,18 @@
 }
 
 /* --- スマホ表示: カード形式 --- */
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 600px) {
     .task-table thead {
         display: none;
         /* ヘッダーを非表示にする */
     }
 
+    body {
+        font-size: 18px;
+        line-height: 1.6;
+        overflow-x: hidden; /* 横スクロールを強制禁止 */
+    }
+    
     .task-table,
     .task-table tbody,
     .task-table tr,
@@ -39,6 +45,7 @@
     }
 
     .task-table td {
+        font-size: 16px;
         display: flex;
         justify-content: center;
         padding: 8px;
@@ -51,6 +58,7 @@
 
     /* 左側に data-label を表示して見出し代わりにする */
     .task-table td::before {
+        font-size: 14px;
         content: attr(data-label);
         position: absolute;
         left: 1.5rem;
@@ -58,9 +66,13 @@
         text-align: left;
     }
 
-     /* 横スクロールを強制禁止 */
-    body {
-        overflow-x: hidden;
+    h1, h2, h3 {
+        font-size: 1.5rem;
+    }
+
+    button, a {
+        font-size: 16px;
+        padding: 10px 14px;
     }
 }
 
