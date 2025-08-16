@@ -44,13 +44,14 @@
         </select>
         <button type="submit">追加</button>
     </form>
-    <div>
-        <a href="/">すべて</a>
-        <a href="/?category=買い物">買い物</a>
-        <a href="/?category=仕事">仕事</a>
-        <a href="/?category=勉強">勉強</a>
-        <a href="/?category=その他">その他</a>
+    <div id="categoryFilter">
+        <button class="filter-btn" data-category="all">すべて</button>
+        <button class="filter-btn" data-category="買い物">買い物</button>
+        <button class="filter-btn" data-category="仕事">仕事</button>
+        <button class="filter-btn" data-category="勉強">勉強</button>
+        <button class="filter-btn" data-category="その他">その他</button>
     </div>
+    <script src="{{ url_for('static', filename='js/filter.js') }}"></script>
     <h2>未完了タスク</h2>
 
     <table id="todoTable">
