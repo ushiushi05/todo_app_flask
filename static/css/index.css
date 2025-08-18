@@ -10,6 +10,54 @@
     padding: 8px;
     text-align: left;
 }
+/* 共通ボタンスタイル */
+.btn {
+  display: inline-block;
+  padding: 6px 12px;
+  margin: 2px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+/* 編集ボタン */
+.btn-edit {
+  background-color: #4CAF50; /* 緑 */
+  color: white;
+}
+.btn-edit:hover {
+  background-color: #45a049;
+}
+
+/* 完了ボタン */
+.btn-comp {
+  background-color: #2196F3; /* 青 */
+  color: white;
+}
+.btn-comp:hover {
+  background-color: #0b7dda;
+}
+
+/* 未完了に戻すボタン */
+.btn-back {
+  background-color: #ff9800; /* オレンジ */
+  color: white;
+}
+.btn-back:hover {
+  background-color: #f57c00;
+}
+
+/* 削除ボタン */
+.btn-del {
+  background-color: #f44336; /* 赤 */
+  color: white;
+}
+.btn-del:hover {
+  background-color: #da190b;
+}
 
 /* --- スマホ表示: カード形式 --- */
 @media screen and (max-width: 440px) {
@@ -22,6 +70,11 @@
         font-size: 18px;
         line-height: 1.6;
         overflow-x: hidden; /* 横スクロールを強制禁止 */
+    }
+
+    .btn {
+        width: 100%;
+        margin: 4px 0;
     }
     
     .task-table,
@@ -91,6 +144,7 @@
 }
 
 .modal-content {
+    font-size: 1.5rem;
     background-color: #fff;
     margin: 10% auto;
     padding: 20px;
@@ -98,7 +152,24 @@
     border-radius: 8px;
 }
 
+#modalTask, #modalCategory, #modalPriority, #editSubmit {
+    font-size: 1.5rem;
+}
+
 #closeModal {
     float: right;
     cursor: pointer;
+}
+
+.accordion-btn {
+  background-color: #eee;
+  border: none;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 16px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+.accordion-btn:hover {
+  background-color: #ddd;
 }
