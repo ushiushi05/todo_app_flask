@@ -58,6 +58,8 @@ def init_db():
 @app.route("/")
 @login_required
 def index():
+    if load_user(current_user.id) is None:
+        return redirect(url_for("login"))
     category_filter = request.args.get("category")
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
