@@ -165,7 +165,7 @@ def update_task(id):
         "date_created": current_date
         })
 
-@app.route("/toggle/<int:id>")
+@app.route("/toggle/<int:id>", methods=["POST"])
 @login_required
 def toggle(id):
     conn = sqlite3.connect(DB_PATH)
@@ -176,10 +176,25 @@ def toggle(id):
         new_status = 0 if task[0] == 1 else 1
         c.execute("UPDATE tasks SET is_done=? WHERE id=? AND user_id=?", (new_status, id, current_user.id))
         conn.commit()
+    
+    c.execute("SELECT id, task, category, priority, date_created, is_done FROM tasks WHERE id=? AND user_id=?", (id, current_user.id))
+    row = c.fetchone()
     conn.close()
-    return redirect("/")
+    
+    task = {
+        "id": row[0],
+        "task": row[1],
+        "category": row[2],
+        "priority": row[3],
+        "date_created": row[4],
+        "is_done": row[5]
+    }
+    print("タスクの状態が更新されました:", task)
+    html = render_template("_task_row.html", task=task)
+    target_table_id = "compTable" if new_status == 1 else "todoTable"
+    return jsonify({"tr_html": html, "target_table_id": target_table_id})
 
-@app.route("/delete/<int:id>")
+@app.route("/delete/<int:id>", methods=["POST"])
 @login_required
 def delete(id):
     conn = sqlite3.connect(DB_PATH)
@@ -187,7 +202,7 @@ def delete(id):
     c.execute("DELETE FROM tasks WHERE id=? AND user_id=?", (id, current_user.id))
     conn.commit()
     conn.close()
-    return redirect("/")
+    return "", 204
 
 @app.route("/register", methods=["GET", "POST"])
 def register():

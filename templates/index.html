@@ -65,13 +65,8 @@
         </thead>
         <tbody>
             {% for task in active_tasks %}
-            <tr id="task-{{ task[0] }}" 
-                class="task-item" 
-                data-id="{{ task[0] }}"
-                data-task="{{ task[1] }}"
-                data-category="{{ task[3] }}"
-                data-priority="{{ task[4] }}"
-                data-created="{{ task[5] }}">
+            <tr id="task-{{ task[0] }}" class="task-item" data-id="{{ task[0] }}" data-task="{{ task[1] }}"
+                data-category="{{ task[3] }}" data-priority="{{ task[4] }}" data-created="{{ task[5] }}">
                 <td class="category" data-label="カテゴリー">{{ task[3] }}</td>
                 <td class="task" data-label="タスク">{{ task[1] }}</td>
                 <td class="priority" data-label="優先度">
@@ -81,8 +76,8 @@
                     {% endif %}
                 </td>
                 <td class="date_created" data-label="作成日">{{ task[5] }}</td>
-                <td><a href="/toggle/{{ task[0] }}">完了</a></td>
-                <td><button class="edit-btn">編集</button></td>
+                <td><a href="/toggle/{{ task[0] }}" class="btn btn-comp">完了</a></td>
+                <td><button class="btn btn-edit">編集</button></td>
             </tr>
             {% else %}
             <tr>
@@ -93,31 +88,34 @@
     </table>
 
     <script src="{{ url_for('static', filename='js/sort.js') }}"></script>
-    <h2>完了タスク</h2>
-    <table id="todoTable">
+    <h2>
+        <button id="taskComp" class="accordion-btn">完了タスク▼</button>
+    </h2>
+
+    <table id="compTable" class="task-table" style="display: none;">
         <thead>
             <tr class="sortable">
-                <th data-type="string">カテゴリー</th>
-                <th data-type="string">タスク</th>
-                <th data-type="number">優先度</th>
-                <th data-type="date">作成日</th>
+                <th data-sort="category">カテゴリー</th>
+                <th data-sort="task">タスク</th>
+                <th data-sort="priority">優先度</th>
+                <th data-sort="created">作成日</th>
             </tr>
         </thead>
         <tbody>
             {% for task in completed_tasks %}
-            <tr class="task-item" data-category="{{ task[3] }}" data-priority="{{ task[4] }}"
-                data-created="{{ task[5] }}">
-                <td>{{ task[3] }}</td>
-                <td>{{ task[1] }}</td>
-                <td>
+            <tr id="task-{{ task[0] }}" class="task-item" data-id="{{ task[0] }}" data-task="{{ task[1] }}"
+                data-category="{{ task[3] }}" data-priority="{{ task[4] }}" data-created="{{ task[5] }}">
+                <td class="category" data-label="カテゴリー">{{ task[3] }}</td>
+                <td class="task" data-label="タスク">{{ task[1] }}</td>
+                <td class="priority" data-label="優先度">
                     {% if task[4] == 1 %}高
                     {% elif task[4] == 2 %}中
                     {% else %}低
                     {% endif %}
                 </td>
-                <td>{{ task[5] }}</td>
-                <td><a href="/toggle/{{ task[0] }}">未完了に戻す</a></td>
-                <td><a href="/delete/{{ task[0] }}">削除</a></td>
+                <td class="date_created" data-label="作成日">{{ task[5] }}</td>
+                <td><a href="/toggle/{{ task[0] }}" class="btn btn-back">未完了に戻す</a></td>
+                <td><a href="/delete/{{ task[0] }}" class="btn btn-del">削除</a></td>
             </tr>
             {% else %}
             <tr>
@@ -126,6 +124,7 @@
             {% endfor %}
         </tbody>
     </table>
+    <script src="{{ url_for('static', filename='js/accordion.js') }}"></script>
     <a href="/logout">ログアウト</a>
 
     <div id="editModal" class="modal">
@@ -137,7 +136,7 @@
                 <label for="modalTask">タスク</label>
                 <input type="text" name="task" id="modalTask" required><br>
                 <label for="modalCategory">カテゴリー</label>
-                <select name="category" id="modalCategory" required> 
+                <select name="category" id="modalCategory" required>
                     <option value="買い物">買い物</option>
                     <option value="仕事">仕事</option>
                     <option value="勉強">勉強</option>
@@ -149,11 +148,12 @@
                     <option value="2">中</option>
                     <option value="3">低</option>
                 </select><br>
-                <button type="submit">保存</button>
+                <button type="submit" id="editSubmit" class="btn">保存</button>
             </form>
         </div>
     </div>
     <script src="{{ url_for('static', filename='js/modal.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/taskUpdate.js') }}"></script>
 </body>
 
 </html>

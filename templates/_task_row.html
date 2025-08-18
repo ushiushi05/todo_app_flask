@@ -1,0 +1,19 @@
+<tr id="task-{{ task.id }}" class="task-item" data-id="{{ task.id }}" data-task="{{ task.task }}"
+  data-category="{{ task.category }}" data-priority="{{ task.priority }}" data-created="{{ task.category }}">
+  <td class="category" data-label="カテゴリー">{{ task.category }}</td>
+  <td class="task" data-label="タスク">{{ task.task }}</td>
+  <td class="priority" data-label="優先度">
+    {% if task.priority == 1 %}高
+    {% elif task.priority == 2 %}中
+    {% else %}低
+    {% endif %}
+  </td>
+  <td class="date_created" data-label="作成日">{{ task.date_created }}</td>
+  {% if task.is_done == 0 %}
+  <td><a href="/toggle/{{ task.id }}" class="btn btn-comp">完了</a></td>
+  <td><button class="btn btn-edit">編集</button></td>
+  {% else %}
+  <td><a href="/toggle/{{ task.id }}" class="btn btn-back">未完了に戻す</a></td>
+  <td><a href="/delete/{{ task.id }}" class="btn btn-del">削除</a></td>
+  {% endif %}
+</tr>
