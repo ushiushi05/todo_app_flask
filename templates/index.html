@@ -3,157 +3,172 @@
 
 <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ToDo App</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
 </head>
 
 <body>
     <h1>{{ username }} のToDoリスト</h1>
-    <div>
-        <form action="/" method="GET">
-            <input type="text" name="q" placeholder="タスクを検索" value="{{ request.args.get('q', '') }}">
-            <button type="submit">検索</button>
-        </form>
-        {% if request.args.get("q") %}
-        {% if search_result %}
-        <ul>
-            {% for task in search_result %}
-            <li>
-                {{ task[1] }} [{{ task[3] }} / 優先度：{{ task[4] }} / 作成日：{{ task[5] }}]
-                <a href="/delete/{{ task[0] }}">削除</a>
-            </li>
-            {% endfor %}
-        </ul>
-        {% else %}
-        <p>該当する未完了タスクはありません。</p>
-        {% endif %}
-        {% endif %}
-    </div>
-    <form action="/add" method="POST">
-        <input type="text" name="task" placeholder="タスクを追加" required>
-        <select name="category">
-            <option value="買い物">買い物</option>
-            <option value="仕事">仕事</option>
-            <option value="勉強">勉強</option>
-            <option value="その他">その他</option>
-        </select>
-        <select name="priority">
-            <option value="1">高</option>
-            <option value="2" selected>中</option>
-            <option value="3">低</option>
-        </select>
-        <button type="submit">追加</button>
-    </form>
-    <div id="categoryFilter">
-        <button class="filter-btn" data-category="all">すべて</button>
-        <button class="filter-btn" data-category="買い物">買い物</button>
-        <button class="filter-btn" data-category="仕事">仕事</button>
-        <button class="filter-btn" data-category="勉強">勉強</button>
-        <button class="filter-btn" data-category="その他">その他</button>
-    </div>
-    <script src="{{ url_for('static', filename='js/filter.js') }}"></script>
-    <h2>未完了タスク</h2>
-
-    <table id="todoTable" class="task-table">
-        <thead>
-            <tr class="sortable">
-                <th data-sort="category">カテゴリー</th>
-                <th data-sort="task">タスク</th>
-                <th data-sort="priority">優先度</th>
-                <th data-sort="created">作成日</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for task in active_tasks %}
-            <tr id="task-{{ task[0] }}" class="task-item" data-id="{{ task[0] }}" data-task="{{ task[1] }}"
-                data-category="{{ task[3] }}" data-priority="{{ task[4] }}" data-created="{{ task[5] }}">
-                <td class="category" data-label="カテゴリー">{{ task[3] }}</td>
-                <td class="task" data-label="タスク">{{ task[1] }}</td>
-                <td class="priority" data-label="優先度">
+    <div class="container-box">
+        <div class="search-box">
+            <h2>タスクの検索</h2>
+            <form action="/" method="GET" class="search-form" autocomplete="off">
+                <input type="search" name="q" placeholder="タスクを検索" value="{{ request.args.get('q', '') }}">
+                <button type="submit">検索</button>
+            </form>
+            {% if request.args.get("q") %}
+            {% if search_result %}
+            <ul>
+                {% for task in search_result %}
+                <li>
+                    {{ task[1] }} [{{ task[3] }} / 優先度：
                     {% if task[4] == 1 %}高
                     {% elif task[4] == 2 %}中
                     {% else %}低
-                    {% endif %}
-                </td>
-                <td class="date_created" data-label="作成日">{{ task[5] }}</td>
-                <td><a href="/toggle/{{ task[0] }}" class="btn btn-comp">完了</a></td>
-                <td><button class="btn btn-edit">編集</button></td>
-            </tr>
+                    {% endif %} / 作成日：{{ task[5] }}]
+                    <a href="/delete/{{ task[0] }}">削除</a>
+                </li>
+                {% endfor %}
+            </ul>
             {% else %}
-            <tr>
-                <td colspan="6">未完了タスクはありません。</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-
-    <script src="{{ url_for('static', filename='js/sort.js') }}"></script>
-    <h2>
-        <button id="taskComp" class="accordion-btn">完了タスク▼</button>
-    </h2>
-
-    <table id="compTable" class="task-table" style="display: none;">
-        <thead>
-            <tr class="sortable">
-                <th data-sort="category">カテゴリー</th>
-                <th data-sort="task">タスク</th>
-                <th data-sort="priority">優先度</th>
-                <th data-sort="created">作成日</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for task in completed_tasks %}
-            <tr id="task-{{ task[0] }}" class="task-item" data-id="{{ task[0] }}" data-task="{{ task[1] }}"
-                data-category="{{ task[3] }}" data-priority="{{ task[4] }}" data-created="{{ task[5] }}">
-                <td class="category" data-label="カテゴリー">{{ task[3] }}</td>
-                <td class="task" data-label="タスク">{{ task[1] }}</td>
-                <td class="priority" data-label="優先度">
-                    {% if task[4] == 1 %}高
-                    {% elif task[4] == 2 %}中
-                    {% else %}低
-                    {% endif %}
-                </td>
-                <td class="date_created" data-label="作成日">{{ task[5] }}</td>
-                <td><a href="/toggle/{{ task[0] }}" class="btn btn-back">未完了に戻す</a></td>
-                <td><a href="/delete/{{ task[0] }}" class="btn btn-del">削除</a></td>
-            </tr>
-            {% else %}
-            <tr>
-                <td colspan="6">完了タスクはありません。</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    <script src="{{ url_for('static', filename='js/accordion.js') }}"></script>
-    <a href="/logout">ログアウト</a>
-
-    <div id="editModal" class="modal">
-        <div class="modal-content">
-            <button id="closeModal">&times;</button>
-            <h2 id="editModalTitle">タスクを編集</h2>
-            <form id="editForm">
-                <input type="hidden" name="task_id" id="modalTaskId">
-                <label for="modalTask">タスク</label>
-                <input type="text" name="task" id="modalTask" required><br>
-                <label for="modalCategory">カテゴリー</label>
-                <select name="category" id="modalCategory" required>
+            <p>該当する未完了タスクはありません。</p>
+            {% endif %}
+            {% endif %}
+        </div>
+        <hr>
+        <div class="adding">
+            <h2 class="adding-h2">タスクの追加</h2>
+            <form action="/add" method="POST" autocomplete="off">
+                <input type="text" name="task" placeholder="タスクを追加" required>
+                <select name="category">
+                    <option value="選択" selected hidden>選択</option>
                     <option value="買い物">買い物</option>
                     <option value="仕事">仕事</option>
                     <option value="勉強">勉強</option>
                     <option value="その他">その他</option>
-                </select><br>
-                <label for="modalPriority">優先度</label>
-                <select name="priority" id="modalPriority" required>
+                </select>
+                <select name="priority">
+                    <option value="選択" selected hidden>選択</option>
                     <option value="1">高</option>
                     <option value="2">中</option>
                     <option value="3">低</option>
-                </select><br>
-                <button type="submit" id="editSubmit" class="btn">保存</button>
+                </select>
+                <button type="submit">追加</button>
             </form>
         </div>
+        <hr>
+        <h2>未完了タスク一覧</h2>
+        <div id="categoryFilter" class="filter-box">
+            <button class="filter-btn" data-category="all">すべて</button>
+            <button class="filter-btn" data-category="買い物">買い物</button>
+            <button class="filter-btn" data-category="仕事">仕事</button>
+            <button class="filter-btn" data-category="勉強">勉強</button>
+            <button class="filter-btn" data-category="その他">その他</button>
+        </div>
+        <div class="active-tasks">
+            <table id="todoTable" class="task-table">
+                <thead>
+                    <tr class="sortable">
+                        <th data-sort="category">カテゴリー</th>
+                        <th data-sort="task">タスク</th>
+                        <th data-sort="priority">優先度</th>
+                        <th data-sort="created">作成日</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for task in active_tasks %}
+                    <tr id="task-{{ task[0] }}" class="task-item" data-id="{{ task[0] }}" data-task="{{ task[1] }}"
+                        data-category="{{ task[3] }}" data-priority="{{ task[4] }}" data-created="{{ task[5] }}">
+                        <td class="category" data-label="カテゴリー">{{ task[3] }}</td>
+                        <td class="task" data-label="タスク">{{ task[1] }}</td>
+                        <td class="priority" data-label="優先度">
+                            {% if task[4] == 1 %}高
+                            {% elif task[4] == 2 %}中
+                            {% else %}低
+                            {% endif %}
+                        </td>
+                        <td class="date_created" data-label="作成日">{{ task[5] }}</td>
+                        <td class="actions">
+                            <a href="/toggle/{{ task[0] }}" class="btn btn-comp">✔️</a>
+                            <button class="btn btn-edit">✏️</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <h2 id="taskComp" class="btn accordion-btn">完了タスク▼</h2>
+        <div class="comp-tasks">
+            <table id="compTable" class="task-table" style="display: none;">
+                <thead>
+                    <tr class="sortable">
+                        <th data-sort="category">カテゴリー</th>
+                        <th data-sort="task">タスク</th>
+                        <th data-sort="priority">優先度</th>
+                        <th data-sort="created">作成日</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for task in completed_tasks %}
+                    <tr id="task-{{ task[0] }}" class="task-item" data-id="{{ task[0] }}" data-task="{{ task[1] }}"
+                        data-category="{{ task[3] }}" data-priority="{{ task[4] }}" data-created="{{ task[5] }}">
+                        <td class="category" data-label="カテゴリー">{{ task[3] }}</td>
+                        <td class="task" data-label="タスク">{{ task[1] }}</td>
+                        <td class="priority" data-label="優先度">
+                            {% if task[4] == 1 %}高
+                            {% elif task[4] == 2 %}中
+                            {% else %}低
+                            {% endif %}
+                        </td>
+                        <td class="date_created" data-label="作成日">{{ task[5] }}</td>
+                        <td class="actions">
+                            <a href="/toggle/{{ task[0] }}" class="btn btn-back">✔️</a>
+                            <a href="/delete/{{ task[0] }}" class="btn btn-del">🗑️</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <hr>
+        <a href="/logout" class="logout">ログアウト</a>
+
+        <div id="editModal" class="modal">
+            <div class="modal-content">
+                <button id="closeModal">&times;</button>
+                <h2 id="editModalTitle">タスクを編集</h2>
+                <form id="editForm">
+                    <input type="hidden" name="task_id" id="modalTaskId">
+                    <label for="modalTask">タスク：</label>
+                    <input type="text" name="task" id="modalTask" required><br>
+                    <label for="modalCategory">カテゴリー：</label>
+                    <select name="category" id="modalCategory" required>
+                        <option value="買い物">買い物</option>
+                        <option value="仕事">仕事</option>
+                        <option value="勉強">勉強</option>
+                        <option value="その他">その他</option>
+                    </select><br>
+                    <label for="modalPriority">優先度：</label>
+                    <select name="priority" id="modalPriority" required>
+                        <option value="1">高</option>
+                        <option value="2">中</option>
+                        <option value="3">低</option>
+                    </select><br>
+                    <button type="submit" id="editSubmit" class="btn">保存</button>
+                </form>
+            </div>
+        </div>
     </div>
+
+    <script src="{{ url_for('static', filename='js/filter.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/sort.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/accordion.js') }}"></script>
     <script src="{{ url_for('static', filename='js/modal.js') }}"></script>
     <script src="{{ url_for('static', filename='js/taskUpdate.js') }}"></script>
+
 </body>
 
 </html>

@@ -1,15 +1,195 @@
-/* --- PC表示: テーブル形式 --- */
-.task-table {
-    width: 100%;
-    border-collapse: collapse;
+h1 {
+  font-size: 2.1rem;
+  text-align: center;
+  margin: 25px;
 }
 
-.task-table th,
-.task-table td {
-    border: 1px solid #ddd;
-    padding: 8px;
-    text-align: left;
+hr {
+  height: 1.5px;
+  width: 85%;
+  background-color: #ccc;
 }
+
+.container-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  background-color: #f0f0f0;
+}
+
+.search-box h2 {
+  text-align: center;
+  margin: 25px auto 10px;
+}
+
+.search-form {
+  display: flex;
+}
+
+.search-box input[type="search"],
+.search-box button[type="submit"] {
+  box-sizing: border-box;
+  font-size: 1.2rem;
+  height: 45px;
+  padding: 0 10px;
+  margin: 15px 5px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background: #fafafa;
+
+}
+
+.search-form input[type="search"] {
+  flex: 1;
+}
+
+.search-form button[type="submit"] {
+  flex-shrink: 0;
+  background-color: #5fa7ff;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.search-form button[type="submit"]:hover {
+  background-color: #4a8cd9;
+}
+
+.adding-h2 {
+  text-align: center;
+  margin: 25px auto 10px;
+}
+
+.adding input[type="text"],
+.adding select,
+.adding button[type="submit"] {
+  box-sizing: border-box;
+  font-size: 1.2rem;
+  height: 40px;
+  padding: 0 10px;
+  margin: 15px 5px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background: #fafafa;
+}
+
+.adding button[type="submit"] {
+  background-color: #5fa7ff;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.adding button[type="submit"]:hover {
+  background-color: #4a8cd9;
+}
+
+h2 {
+  font-size: 1.7rem;
+  margin: 25px 0 10px;
+}
+
+.filter-box {
+  display: flex;
+}
+
+.filter-btn {
+  box-sizing: border-box;
+  font-size: 1rem;
+  height: 30px;
+  padding: 0 10px;
+  margin: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background: #fafafa;
+  cursor: pointer;
+}
+
+.filter-btn:hover {
+  background-color: #e0e0e0;
+}
+
+/* 全体のテーブルデザイン */
+.active-tasks {
+  margin: 10px auto;
+}
+
+.task-table {
+  width: 700px;
+  max-width: 700px;
+  border-collapse: collapse;
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* ヘッダー */
+.task-table thead {
+  background: linear-gradient(135deg, #4f46e5, #6366f1);
+  color: #fff;
+  text-align: center;
+}
+
+.task-table thead th {
+  padding: 12px 16px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.2s ease;
+}
+
+.task-table thead th:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* 行 */
+.task-table tbody tr {
+  border-bottom: 1px solid #f1f5f9;
+  transition: background 0.2s ease;
+}
+
+/* セル */
+.task-table td {
+  padding: 12px 16px;
+  font-size: 14px;
+  color: #374151;
+  vertical-align: middle;
+}
+
+.task-table td.actions {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  align-items: center;
+}
+
+/* ボタン */
+.task-table .btn {
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.1s ease;
+}
+
+.task-table .btn:hover {
+  transform: translateY(-1px);
+}
+
+/* 空テーブルメッセージ */
+.task-table tbody tr td[colspan] {
+  text-align: center;
+  color: #6b7280;
+  font-style: italic;
+  padding: 20px 0;
+}
+
 /* 共通ボタンスタイル */
 .btn {
   display: inline-block;
@@ -25,151 +205,258 @@
 
 /* 編集ボタン */
 .btn-edit {
-  background-color: #4CAF50; /* 緑 */
+  background-color: #4CAF50;
+  /* 緑 */
   color: white;
 }
+
 .btn-edit:hover {
   background-color: #45a049;
 }
 
 /* 完了ボタン */
 .btn-comp {
-  background-color: #2196F3; /* 青 */
+  background-color: #2196F3;
+  /* 青 */
   color: white;
 }
+
 .btn-comp:hover {
   background-color: #0b7dda;
 }
 
 /* 未完了に戻すボタン */
 .btn-back {
-  background-color: #ff9800; /* オレンジ */
+  background-color: #ff9800;
+  /* オレンジ */
   color: white;
 }
+
 .btn-back:hover {
   background-color: #f57c00;
 }
 
 /* 削除ボタン */
 .btn-del {
-  background-color: #f44336; /* 赤 */
+  background-color: #f44336;
+  /* 赤 */
   color: white;
 }
+
 .btn-del:hover {
   background-color: #da190b;
 }
 
+.comp-tasks {
+  margin: 10px auto 15px;
+}
+
+.accordion-btn {
+  font-size: 1.3rem !important;
+  text-align: center;
+}
+
+.logout {
+  display: block;
+  text-align: center;
+  margin: 20px auto;
+  padding: 10px;
+  background-color: #fdd7d5;
+  font-size: 1.15rem;
+  color: black;
+  border-radius: 8px;
+  text-decoration: none;
+}
+
+.logout:hover {
+  background-color: #debbba;
+}
+
 /* --- スマホ表示: カード形式 --- */
 @media screen and (max-width: 440px) {
-    .task-table thead {
-        display: none;
-        /* ヘッダーを非表示にする */
-    }
+  .task-table thead {
+    display: none;
+    /* ヘッダーを非表示にする */
+  }
 
-    body {
-        font-size: 18px;
-        line-height: 1.6;
-        overflow-x: hidden; /* 横スクロールを強制禁止 */
-    }
+  body {
+    font-size: 18px;
+    line-height: 1.6;
+    overflow-x: hidden;
+    /* 横スクロールを強制禁止 */
+  }
 
-    .btn {
-        width: 100%;
-        margin: 4px 0;
-    }
-    
-    .task-table,
-    .task-table tbody,
-    .task-table tr,
-    .task-table td {
-        display: block;
-        width: 100% !important;
-        max-width: 100% !important;
-        box-sizing: border-box;
+  .btn {
+    width: 100%;
+    margin: 4px 0;
+  }
 
-    }
+  .task-table,
+  .task-table tbody,
+  .task-table tr,
+  .task-table td {
+    display: block;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box;
 
-    .task-table tr {
-        margin-bottom: 1rem;
-        border: 1px solid #ccc;
-        border-radius: 8px;
-        padding: 0.5rem;
-        background: #fafafa;
-        width: 100% !important;
-    }
+  }
 
-    .task-table td {
-        font-size: 16px;
-        display: flex;
-        justify-content: center;
-        padding: 8px;
-        border: none;
-        border-bottom: 1px solid #eee;
-        width: 100% !important;
-        max-width: 100% !important;
-        word-break: break-word; /* 長文がはみ出さない */
-    }
+  .task-table tr {
+    margin-bottom: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 0.5rem;
+    background: #fafafa;
+    width: 100% !important;
+  }
 
-    /* 左側に data-label を表示して見出し代わりにする */
-    .task-table td::before {
-        font-size: 14px;
-        content: attr(data-label);
-        position: absolute;
-        left: 1.5rem;
-        font-weight: bold;
-        text-align: left;
-    }
+  .task-table td {
+    font-size: 16px;
+    display: flex;
+    justify-content: center;
+    padding: 8px;
+    border: none;
+    border-bottom: 1px solid #eee;
+    width: 100% !important;
+    max-width: 100% !important;
+    word-break: break-word;
+    /* 長文がはみ出さない */
+  }
 
-    h1, h2, h3 {
-        font-size: 1.5rem;
-    }
+  /* 左側に data-label を表示して見出し代わりにする */
+  .task-table td::before {
+    font-size: 14px;
+    content: attr(data-label);
+    position: absolute;
+    left: 1.5rem;
+    font-weight: bold;
+    text-align: left;
+  }
 
-    button, a {
-        font-size: 16px;
-        padding: 10px 14px;
-    }
+  h1,
+  h2,
+  h3 {
+    font-size: 1.5rem;
+  }
+
+  button,
+  a {
+    font-size: 16px;
+    padding: 10px 14px;
+  }
 }
 
 
 /* ==== モーダル ==== */
+/* モーダル全体（背景の半透明） */
 .modal {
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0, 0, 0, 0.4);
+  display: none; /* JSで表示時に block に切り替え */
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5); /* 半透明の背景 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.3s ease;
 }
 
+/* モーダルコンテンツ */
 .modal-content {
-    font-size: 1.5rem;
-    background-color: #fff;
-    margin: 10% auto;
-    padding: 20px;
-    width: 60%;
-    border-radius: 8px;
+  background: #fff;
+  padding: 2rem;
+  border-radius: 12px;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  position: relative;
+  animation: slideUp 0.3s ease;
+  font-family: "Segoe UI", "Helvetica Neue", sans-serif;
 }
 
-#modalTask, #modalCategory, #modalPriority, #editSubmit {
-    font-size: 1.5rem;
+/* タイトル */
+#editModalTitle {
+  font-size: 1.4rem;
+  margin-bottom: 1.2rem;
+  color: #333;
+  text-align: center;
 }
 
+/* 閉じるボタン */
 #closeModal {
-    float: right;
-    cursor: pointer;
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  border: none;
+  background: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #666;
+  transition: color 0.2s;
+}
+#closeModal:hover {
+  color: #000;
 }
 
-.accordion-btn {
-  background-color: #eee;
-  border: none;
-  padding: 8px 12px;
-  cursor: pointer;
-  font-size: 16px;
-  border-radius: 5px;
-  margin-bottom: 10px;
+/* フォーム全体 */
+#editForm {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
-.accordion-btn:hover {
-  background-color: #ddd;
+
+/* ラベル */
+#editForm label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-bottom: 0.2rem;
+  color: #555;
+}
+
+/* 入力欄・セレクト */
+#editForm input,
+#editForm select {
+  padding: 0.6rem;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+#editForm input:focus,
+#editForm select:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 4px rgba(0,123,255,0.3);
+  outline: none;
+}
+
+/* 保存ボタン */
+#editSubmit {
+  background: #007bff;
+  color: #fff;
+  border: none;
+  padding: 0.8rem;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+#editSubmit:hover {
+  background: #0056b3;
+}
+#editSubmit:active {
+  transform: scale(0.98);
+}
+
+/* アニメーション */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes slideUp {
+  from { transform: translateY(30px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
 }

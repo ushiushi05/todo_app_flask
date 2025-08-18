@@ -84,27 +84,15 @@ def index():
                   SELECT id, task, is_done, category, priority, date_created
                   FROM tasks
                   WHERE user_id=? AND category=? AND is_done=1
-                  ORDER BY 
-                CASE priority
-                    WHEN "高" THEN 1
-                    WHEN "中" THEN 2
-                    WHEN "低" THEN 3
-                END
         """, (current_user.id, category_filter))
     else:
         c.execute("""
             SELECT id, task, is_done, category, priority, date_created
             FROM tasks 
             WHERE user_id=? AND is_done=1 
-            ORDER BY 
-            CASE priority
-                WHEN "高" THEN 1
-                WHEN "中" THEN 2
-                WHEN "低" THEN 3
-            END
         """, (current_user.id,))
     completed_tasks = c.fetchall()  
-    
+
     # 検索機能
     search_result = []
     search_query = request.args.get("q", "")
@@ -113,16 +101,10 @@ def index():
                   SELECT id, task, is_done, category, priority, date_created
                   FROM tasks
                   WHERE user_id=? AND task LIKE ? AND is_done=0
-                  ORDER BY
-                  CASE priority
-                      WHEN "高" THEN 1
-                      WHEN "中" THEN 2
-                      WHEN "低" THEN 3
-                  END
         """, (current_user.id, f"%{search_query}%"))        
     search_result = c.fetchall()            
     conn.close()
-    
+
     return render_template("index.html", active_tasks=active_tasks, completed_tasks=completed_tasks, 
                            search_result=search_result, username=current_user.username)
 
@@ -219,7 +201,7 @@ def register():
             conn.close()
             return redirect(url_for("login"))
         except sqlite3.IntegrityError:
-            return "ユーザー名がすでに存在します"
+            return render_template("register.html")
     return render_template("register.html")
             
 @app.route("/login", methods=["GET", "POST"])
@@ -237,7 +219,7 @@ def login():
             login_user(user)
             return redirect(url_for("index"))
         else:
-            return "ユーザー名またはパスワードが間違っています"
+            return render_template("login.html")
     return render_template("login.html")
 
 @app.route("/logout")

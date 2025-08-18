@@ -1,4 +1,5 @@
 const modal = document.getElementById("editModal");
+modal.style.display = "none";
 const closeModal = document.getElementById("closeModal");
 const editForm = document.getElementById("editForm");
 
@@ -11,7 +12,7 @@ document.querySelectorAll(".btn-edit").forEach(btn => {
         document.getElementById("modalTask").value = tr.dataset.task;
         document.getElementById("modalCategory").value = tr.dataset.category;
         document.getElementById("modalPriority").value = tr.dataset.priority;
-        modal.style.display = "block";
+        modal.style.display = "flex";
     });
 });
 
