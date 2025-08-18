@@ -2,10 +2,11 @@ const modal = document.getElementById("editModal");
 const closeModal = document.getElementById("closeModal");
 const editForm = document.getElementById("editForm");
 
-document.querySelectorAll(".edit-btn").forEach(btn => {
+document.querySelectorAll(".btn-edit").forEach(btn => {
     btn.addEventListener("click", (e) => {
         console.log("Edit button clicked");
         const tr = e.target.closest("tr");
+        console.log("Row data:", tr.dataset);
         document.getElementById("modalTaskId").value = tr.dataset.id;
         document.getElementById("modalTask").value = tr.dataset.task;
         document.getElementById("modalCategory").value = tr.dataset.category;
@@ -51,6 +52,12 @@ editForm.addEventListener("submit", async (e) => {
             tr.querySelector(`#task-${updated.id} .task`).textContent = updated.task;
             tr.querySelector(`#task-${updated.id} .category`).textContent = updated.category;
             tr.querySelector(`#task-${updated.id} .priority`).textContent = updated.priority == 1 ? "高" : updated.priority == 2 ? "中" : "低";
+
+            // dataset も更新
+            tr.dataset.task = updated.task;
+            tr.dataset.category = updated.category;
+            tr.dataset.priority = updated.priority;
+            tr.dataset.created = updated.date_created;
         }
 
         modal.style.display = "none";
