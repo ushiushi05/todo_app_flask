@@ -11,12 +11,12 @@
   <td class="date_created" data-label="作成日">{{ task.date_created }}</td>
   {% if task.is_done == 0 %}
   <td class="actions">
-    <a href="/toggle/{{ task[0] }}" class="btn btn-comp">✔️</a>
-    <button class="btn btn-edit">✏️</button>
+    <a href="/toggle/{{ task[0] }}" class="btn btn-comp">完了</a>
+    <button class="btn btn-edit">編集</button>
   </td>
   {% else %}
   <td class="actions">
-    <a href="/toggle/{{ task[0] }}" class="btn btn-back">✔️</a>
-    <a href="/delete/{{ task[0] }}" class="btn btn-del">🗑️</a>
+    <a href="/toggle/{{ task[0] }}" class="btn btn-back">未完了</a>
+    <a href="/delete/{{ task[0] }}" class="btn btn-del">削除</a>
   </td> {% endif %}
 </tr>
