@@ -5,9 +5,7 @@ h1 {
 }
 
 hr {
-  height: 1.5px;
   width: 85%;
-  background-color: #ccc;
 }
 
 .container-box {
@@ -60,7 +58,12 @@ hr {
   text-align: center;
   margin: 25px auto 10px;
 }
-
+.adding form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
 .adding input[type="text"],
 .adding select,
 .adding button[type="submit"] {
@@ -68,7 +71,7 @@ hr {
   font-size: 1.2rem;
   height: 40px;
   padding: 0 10px;
-  margin: 15px 5px;
+  margin: 10px 5px;
   border: 1px solid #ccc;
   border-radius: 8px;
   background: #fafafa;
@@ -116,14 +119,12 @@ h2 {
 }
 
 .task-table {
-  width: 700px;
-  max-width: 700px;
+  width: 100%;
+  max-width: 100%;
   border-collapse: collapse;
   font-family: "Helvetica Neue", Arial, sans-serif;
   background: #fff;
-  border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 /* ヘッダー */
@@ -148,7 +149,6 @@ h2 {
 
 /* 行 */
 .task-table tbody tr {
-  border-bottom: 1px solid #f1f5f9;
   transition: background 0.2s ease;
 }
 
@@ -286,9 +286,45 @@ h2 {
     /* 横スクロールを強制禁止 */
   }
 
+    .adding form {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .adding input[type="text"] {
+    width: 100%;
+    max-width: 250px;
+    margin: 10px 0;
+  }
+  .adding select {
+    width: 100%;
+    max-width: 250px;
+    margin: 10px 0;
+  }
+
+  /* 2つの select を横並びにするためのラッパ */
+  .select-row {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    width: 100%;
+    max-width: 250px;
+    margin: 0;
+  }
+
+  .select-row select {
+    flex: 1;   /* 均等に広げる */
+  }
+   .adding button {
+    display: block;
+    width: 100%;
+    max-width: 100px;
+    margin: 10px auto !important;
+   }
+
   .btn {
     width: 100%;
-    margin: 4px 0;
+    margin: 4px 4px;
   }
 
   .task-table,
@@ -303,9 +339,9 @@ h2 {
   }
 
   .task-table tr {
-    margin-bottom: 1rem;
+
     border: 1px solid #ccc;
-    border-radius: 8px;
+
     padding: 0.5rem;
     background: #fafafa;
     width: 100% !important;
@@ -317,7 +353,7 @@ h2 {
     justify-content: center;
     padding: 8px;
     border: none;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid #ddd;
     width: 100% !important;
     max-width: 100% !important;
     word-break: break-word;
@@ -342,23 +378,37 @@ h2 {
 
   button,
   a {
-    font-size: 16px;
-    padding: 10px 14px;
+    font-size: 15px !important;
+  }
+
+  .btn-back,
+  .btn-comp,
+  .btn-edit,
+  .btn-del {
+    padding: 0 !important;
+    display: flex;
+    align-items: center; /* 縦方向の中央 */
+    justify-content: center; /* 横方向の中央 */
+    max-width: 50px; /* 正方形にしたい場合 */
+    max-height: 40px;
+    width: 50px;
+    height: 40px;
   }
 }
-
 
 /* ==== モーダル ==== */
 /* モーダル全体（背景の半透明） */
 .modal {
-  display: none; /* JSで表示時に block に切り替え */
+  display: none;
+  /* JSで表示時に block に切り替え */
   position: fixed;
   z-index: 1000;
   left: 0;
   top: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0,0,0,0.5); /* 半透明の背景 */
+  background-color: rgba(0, 0, 0, 0.5);
+  /* 半透明の背景 */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -372,7 +422,7 @@ h2 {
   border-radius: 12px;
   max-width: 400px;
   width: 90%;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
   position: relative;
   animation: slideUp 0.3s ease;
   font-family: "Segoe UI", "Helvetica Neue", sans-serif;
@@ -398,6 +448,7 @@ h2 {
   color: #666;
   transition: color 0.2s;
 }
+
 #closeModal:hover {
   color: #000;
 }
@@ -426,10 +477,11 @@ h2 {
   font-size: 0.95rem;
   transition: border-color 0.2s, box-shadow 0.2s;
 }
+
 #editForm input:focus,
 #editForm select:focus {
   border-color: #007bff;
-  box-shadow: 0 0 4px rgba(0,123,255,0.3);
+  box-shadow: 0 0 4px rgba(0, 123, 255, 0.3);
   outline: none;
 }
 
@@ -444,19 +496,34 @@ h2 {
   cursor: pointer;
   transition: background 0.2s, transform 0.1s;
 }
+
 #editSubmit:hover {
   background: #0056b3;
 }
+
 #editSubmit:active {
   transform: scale(0.98);
 }
 
 /* アニメーション */
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
+
 @keyframes slideUp {
-  from { transform: translateY(30px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }

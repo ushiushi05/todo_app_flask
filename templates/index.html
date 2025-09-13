@@ -36,28 +36,30 @@
             {% endif %}
             {% endif %}
         </div>
-        <hr>
+        <hr size="1" color="grey" noshade="">
         <div class="adding">
             <h2 class="adding-h2">タスクの追加</h2>
             <form action="/add" method="POST" autocomplete="off">
                 <input type="text" name="task" placeholder="タスクを追加" required>
-                <select name="category">
-                    <option value="選択" selected hidden>選択</option>
-                    <option value="買い物">買い物</option>
-                    <option value="仕事">仕事</option>
-                    <option value="勉強">勉強</option>
-                    <option value="その他">その他</option>
-                </select>
-                <select name="priority">
-                    <option value="選択" selected hidden>選択</option>
-                    <option value="1">高</option>
-                    <option value="2">中</option>
-                    <option value="3">低</option>
-                </select>
+                <div class="select-row">
+                    <select name="category">
+                        <option value="選択" selected hidden>選択</option>
+                        <option value="買い物">買い物</option>
+                        <option value="仕事">仕事</option>
+                        <option value="勉強">勉強</option>
+                        <option value="その他">その他</option>
+                    </select>
+                    <select name="priority">
+                        <option value="選択" selected hidden>選択</option>
+                        <option value="1">高</option>
+                        <option value="2">中</option>
+                        <option value="3">低</option>
+                    </select>
+                </div>
                 <button type="submit">追加</button>
             </form>
         </div>
-        <hr>
+        <hr size="1" color="grey" noshade="">
         <h2>未完了タスク一覧</h2>
         <div id="categoryFilter" class="filter-box">
             <button class="filter-btn" data-category="all">すべて</button>
@@ -91,8 +93,8 @@
                         </td>
                         <td class="date_created" data-label="作成日">{{ task[5] }}</td>
                         <td class="actions">
-                            <a href="/toggle/{{ task[0] }}" class="btn btn-comp">✔️</a>
-                            <button class="btn btn-edit">✏️</button>
+                            <a href="/toggle/{{ task[0] }}" class="btn btn-comp">完了</a>
+                            <button class="btn btn-edit">編集</button>
                         </td>
                     </tr>
                     {% endfor %}
@@ -125,15 +127,15 @@
                         </td>
                         <td class="date_created" data-label="作成日">{{ task[5] }}</td>
                         <td class="actions">
-                            <a href="/toggle/{{ task[0] }}" class="btn btn-back">✔️</a>
-                            <a href="/delete/{{ task[0] }}" class="btn btn-del">🗑️</a>
+                            <a href="/toggle/{{ task[0] }}" class="btn btn-back">未完了</a>
+                            <a href="/delete/{{ task[0] }}" class="btn btn-del">削除</a>
                         </td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
-        <hr>
+        <hr size="1" color="grey" noshade="">
         <a href="/logout" class="logout">ログアウト</a>
 
         <div id="editModal" class="modal">
