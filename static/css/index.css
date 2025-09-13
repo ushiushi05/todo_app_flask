@@ -376,9 +376,15 @@ h2 {
     font-size: 1.5rem;
   }
 
+  .filter-btn {
+    padding: 0 7.5px;
+    margin: 5px;
+    font-size: 13px !important;
+  }
+
   button,
   a {
-    font-size: 15px !important;
+    font-size: 16px !important;
   }
 
   .btn-back,
